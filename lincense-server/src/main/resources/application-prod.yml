@@ -1,0 +1,56 @@
+#License相关配置
+license:
+  subject: license_demo
+  publicAlias: publicCert
+  storePass: public_orcadt_key_654321
+  licensePath: /home/orcadt/license-server/license/
+  privateKeysStorePath: /home/orcadt/license-server/privateKeys.keystore
+  publicKeysStorePath: /home/orcadt/license-server/publicCerts.keystore
+
+#
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.101.189:3306/license_base?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      #            url: jdbc:mysql://192.168.224.9:3306/renren_fast?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #Oracle需要打开注释
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+        slf4j:
+          enabled: true
+          statement-log-enabled: true
+          statement-executable-sql-log-enable: true
+
+
+

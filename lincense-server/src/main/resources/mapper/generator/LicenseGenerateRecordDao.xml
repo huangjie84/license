@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.orcadt.iot.dao.LicenseGenerateRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.orcadt.iot.entity.LicenseGenerateRecordEntity" id="licenseGenerateRecordMap">
+        <result property="recordId" column="record_id"/>
+        <result property="subject" column="subject"/>
+        <result property="keyPass" column="key_pass"/>
+        <result property="storePass" column="store_pass"/>
+        <result property="licensePath" column="license_path"/>
+        <result property="privateKeysStorePath" column="private_keys_store_path"/>
+        <result property="issuedTime" column="issued_time"/>
+        <result property="expiryTime" column="expiry_time"/>
+        <result property="consumerType" column="consumer_type"/>
+        <result property="consumerAmount" column="consumer_amount"/>
+        <result property="description" column="description"/>
+        <result property="licenseCheckModel" column="license_check_model"/>
+    </resultMap>
+
+
+</mapper>

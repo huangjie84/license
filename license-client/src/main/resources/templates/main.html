@@ -1,0 +1,301 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>首页</title>
+     <link rel="stylesheet" type="text/css" th:href="@{/css/element-ui.css}" />
+    <script type="text/javascript"   th:src="@{/js/vue.min.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/element.js}"></script>
+
+    <!--<link rel="stylesheet" type="text/css" href="./static/css/element-ui.css" />
+    <script type="text/javascript" src="./static/js/vue.min.js"></script>
+    <script type="text/javascript" src="./static/js/element.js"></script>-->
+
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+        body{
+            /* background: url("/img/2.jpg"); */
+        }
+        #app{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .line{
+            text-align: center;
+            height: 60px;
+            background-color: #f9fafb;
+            line-height: 55px;
+            font-size: 28px;
+        }
+        .linebottom {
+            text-align: right;
+            height: 48px !important;
+            line-height: 45px;
+            font-size: 12px;
+        }
+        .lic-form-line {
+            width: 100%;
+            display: flex;
+        }
+
+        .el-form-item {
+            width: 45%;
+            display: flex !important;
+        }
+
+        .el-form-item .el-form-item__label {
+            width: 160px !important;
+        }
+
+        .el-form--inline .el-form-item__content {
+            display: flex;
+            justify-content: flex-start;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .demo-form-inline .el-form-item {
+            width: 100%;
+            box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5);
+            margin-bottom: 5px;
+            padding: 20px;
+        }
+
+        .lic-server-form .el-form-item{
+            margin-bottom: 5px;
+        }
+
+        .el-form-item .upload-demo {
+            width: 100%;
+        }
+        .form{
+            width: 100%;
+            border: 3px solid #fff;
+            border-radius: 20px;
+            /* padding: 12px; */
+            font-weight: 900;
+        }
+        .el-tag{
+            margin: 5px;
+        }
+        .upload-demo{
+            width: 360px;
+        }
+        .el-upload-list__item-name [class^=el-icon]{
+            height: auto;
+        }
+
+        .lic-warning {
+            color:#d03e1e;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container class="full">
+        <el-header class="line">欢迎查看 orcadt license 系统</el-header>
+        <el-main style="display: flex;justify-content: center;">
+            <el-tabs v-model="activeName" type="card" class="form" @tab-click="handleClick">
+                <el-tab-pane label="授权证书" name="first">
+                    <el-form ref="form" :model="license" label-width="120px"  :inline="true" :disabled="true">
+
+                        <div class="lic-form-line">
+                            <el-form-item label="证书签发时间">
+                                <div class="block">
+                                    <el-date-picker v-model="license.issued" type="datetime" placeholder="----">
+                                    </el-date-picker>
+                                </div>
+                            </el-form-item>
+                            <el-form-item label="证书生效时间">
+                                <el-date-picker v-model="license.notBefore" type="datetime" placeholder="----">
+                                </el-date-picker>
+                            </el-form-item>
+                        </div>
+                        <div class="lic-form-line">
+                            <el-form-item label="证书到期时间">
+                                <el-date-picker
+                                        v-model="license.notAfter"
+                                        type="datetime"
+                                        placeholder="----">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="证书主题">
+                                <el-input v-model="license.subject"></el-input>
+                            </el-form-item>
+                        </div>
+
+                        <div class="lic-form-line">
+                            <el-form-item label="证书其他信息">
+                                <el-input v-model="license.info"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="授权CPU编号">
+                                <el-tag >{{extra.cpuSerial}}</el-tag>
+                            </el-form-item>
+                        </div>
+
+                        <div class="lic-form-line">
+                            <el-form-item label="授权主板编号">
+                                <el-tag >{{extra.mainBoardSerial}}</el-tag>
+                            </el-form-item>
+
+                            <el-form-item label="授权MAC地址">
+                                <el-tag v-for="item in extra.macList">{{item}}</el-tag>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                    <el-table
+                            :data="tableData"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                type="index"
+                                label="序号"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="授权项">
+                        </el-table-column>
+                        <el-table-column
+                                prop="value"
+                                label="授权参数">
+                        </el-table-column>
+                        <!--<el-table-column
+                                prop="address"
+                                label="地址">
+                        </el-table-column>-->
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="服务器信息和授权" name="second">
+                    <el-form ref="form" :model="serverInfos" class="lic-server-form" label-width="120px" :inline="true" :disabled="true">
+                        <div class="lic-form-line">
+                            <el-form-item label="服务器CPU">
+                                <el-tag >{{serverInfos.cpuSerial}}</el-tag>
+                            </el-form-item>
+                            <el-form-item label="服务器主板">
+                                <el-tag >{{serverInfos.mainBoardSerial}}</el-tag>
+                            </el-form-item>
+                        </div>
+                        <div class="lic-form-line">
+                            <el-form-item label="服务器MAC">
+                                <el-tag v-for="item in serverInfos.macList">{{item}}</el-tag>
+                            </el-form-item>
+                            <el-form-item label="服务器IP">
+                                <el-tag v-for="item in serverInfos.ipList">{{item}}</el-tag>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                    <div>
+                        <el-form :inline="true" :model="form" class="demo-form-inline">
+                            <!-- <el-alert title="替换授权文件成功后,之前的授权文件会被覆盖,请谨慎操作!" type="warning" :closable="false" effect="dark">
+                            </el-alert> -->
+                            <el-form-item>
+
+                                <el-upload class="upload-demo" list-type="text" ref="upload" action="/license/upload"
+                                    :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess"
+                                    :on-error="handleError" :auto-upload="false" accept=".lic" limit="2">
+                                    <el-button slot="trigger" size="small" type="default"><i class="el-icon-upload" style="font-size:14px"></i> 选取文件 (只能上传lic文件)</el-button>
+                                    <span class="lic-warning">替换授权文件成功后,之前的授权文件会被覆盖,请谨慎操作!</span>
+
+                                    <!-- <div slot="tip" class="el-upload__tip"></div> -->
+                                </el-upload>
+                                <el-button style="margin-top: 10px;" size="small" type="success" @click="submitUpload">上传并替换授权文件
+                                </el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-tab-pane>
+                <!-- <el-tab-pane label="替换授权文件" name="third">
+                </el-tab-pane> -->
+            </el-tabs>
+
+        </el-main>
+        <el-footer class="linebottom">版权所有 orcadt@copyright by <el-link type="primary" style="font-size: 12px;">jie.huang</el-link></el-footer>
+    </el-container>
+</div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+    var license =   [[${license}]];
+    var errorMsg =   [[${errorMsg}]];
+    var serverInfos =   [[${serverInfos}]];
+    var extra =   [[${extra}]];
+</script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data: {
+            form:{},
+            errorMsg:errorMsg,
+            extra:extra?extra:{},
+            serverInfos:serverInfos?serverInfos:{},
+            activeName: 'first',
+            license:license?license:{},
+            fileList:[],
+            tableData:[]
+        },
+        mounted:function () {
+            this.readError()
+            this.initTable()
+        },
+        methods:{
+            initTable:function () {
+              if (extra && extra.authModels){
+                  this.tableData=extra.authModels
+              }
+            },
+            readError:function () {
+                if (this.errorMsg){
+                    this.$message.error(errorMsg)
+                }
+            },
+            handleClick:function () {
+                console.log("我们切换了标签")
+            },
+            submitUpload:function () {
+                this.$refs.upload.submit();
+            },
+            handleRemove:function (file, fileList) {
+                console.log("file remove");
+                console.log(file, fileList);
+            },
+            handlePreview:function (file) {
+                console.log(file);
+            },
+            handleSuccess:function (response, file, fileList) {
+                if (response.code!==200){
+                    this.$message.error(response.msg)
+                }else{
+                    this.$message.success("替换成功")
+                }
+                console.log("upload filesize:"+fileList.length);
+                if (fileList.length>1){
+                    fileList.shift()
+                }
+                console.log("upload success");
+                console.log(response, file, fileList);
+            },
+            handleError:function (err, file, fileList) {
+                console.log("some error");
+                console.log(err, file, fileList);
+            }
+        }
+    })
+
+</script>
+</html>

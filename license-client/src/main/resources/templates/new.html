@@ -1,0 +1,288 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>首页</title>
+     <link rel="stylesheet" type="text/css" th:href="@{/css/element-ui.css}" />
+    <script type="text/javascript"   th:src="@{/js/vue.min.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/element.js}"></script>
+
+    <!--<link rel="stylesheet" type="text/css" href="./static/css/element-ui.css" />
+    <script type="text/javascript" src="./static/js/vue.min.js"></script>
+    <script type="text/javascript" src="./static/js/element.js"></script>-->
+
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+        .el-pagination {
+            text-align: right;
+        }
+        #app{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .line{
+            text-align: center;
+            height: 60px;
+            background-color: #f9fafb;
+            line-height: 55px;
+            font-size: 28px;
+        }
+        .linebottom {
+            text-align: right;
+            height: 48px !important;
+            line-height: 45px;
+            font-size: 12px;
+        }
+        .lic-form-line {
+            width: 100%;
+        }
+
+        .el-form-item {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .lic-server-form .el-form-item{
+            margin-bottom: 5px;
+        }
+
+        .el-form-item .upload-demo {
+            width: 100%;
+        }
+        .el-main.outer{
+            width: 100%;
+            border: 3px solid #fff;
+            padding: 0 40px;
+            font-weight: 900;
+        }
+
+        .lic-dialog .el-dialog{
+            width: 500px;
+        }
+
+        .lic-dialog .el-dialog .el-dialog__body {
+            padding: 10px 20px 0;
+        }
+
+        .lic-dialog .el-form-item__label {
+            width: 100px !important;
+            text-align: left;
+        }
+        .lic-dialog .el-form-item__content {
+            margin-left: 5px !important;
+            display: flex;
+            flex: 1;
+        }
+
+        .lic-dialog .el-form-item__content .el-select {
+            width: 100%;
+        }
+
+        .el-tag{
+            margin: 5px;
+        }
+        .upload-demo{
+            width: 360px;
+        }
+        .el-upload-list__item-name [class^=el-icon]{
+            height: auto;
+        }
+
+        .lic-top-button {
+            width: 100px;
+            margin: 5px;
+        }
+        .lic-warning {
+            color:#d03e1e;
+            font-size: 12px 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container class="full">
+        <el-header class="line">欢迎查看 orcadt license 系统</el-header>
+        <el-main style="display: flex;justify-content: center;align-items: flex-end; flex-direction: column;" class="outer">
+            <el-button class="lic-top-button" size="small" type="primary" @click="dialogFormVisible = true">打开弹窗
+            </el-button>
+            <el-table
+                    :data="tableData"
+                    border
+                    style="width: 100%">
+                <el-table-column
+                        type="index"
+                        label="序号"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        prop="column1"
+                        label="列1">
+                </el-table-column>
+                <el-table-column prop="column2" label="列2">
+                </el-table-column>
+                <el-table-column prop="column3" label="列3">
+                </el-table-column>
+
+                <el-table-column prop="column4" label="列4">
+                </el-table-column>
+                <el-table-column prop="column5" label="列5">
+                </el-table-column>
+                <el-table-column prop="column6" label="列6">
+                </el-table-column>
+                <el-table-column prop="column7" label="列7">
+                </el-table-column>
+            </el-table>
+            <el-pagination background layout="prev, pager, next" :total="1000">
+            </el-pagination>
+        </el-main>
+        <el-dialog class="lic-dialog" title="标题" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item><el-form-item label="字段1" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字段2" :label-width="formLabelWidth">
+                    <el-select v-model="form.region" placeholder="请选择活动区域">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">生成下载</el-button>
+            </div>
+        </el-dialog>
+        <el-footer class="linebottom">版权所有 orcadt@copyright by <el-link type="primary" style="font-size: 12px;">jie.huang</el-link></el-footer>
+    </el-container>
+</div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+    var license =   {};
+    var errorMsg =   '';
+    var serverInfos =   {
+        xxcpuSerial:'abceeddd',
+        mainBoardSerial:'mucdeanncncncncn',
+        macList: [
+            'abccc',
+            '1231231',
+            'ccbdddnd'
+        ],
+    };
+    var extra =   {
+        authModels:[
+            {
+                column1:'测试1',
+                column2:'测试11',
+                column3:'测试111',
+                column4:'测试1111',
+                column5:'测试11111',
+                column6:'测试111111',
+                column7:'测试1111111',
+            },
+            {
+                column1: '测试1',
+                column2: '测试11',
+                column3: '测试111',
+                column4: '测试1111',
+                column5: '测试11111',
+                column6: '测试111111',
+                column7: '测试1111111',
+            },
+        ]
+    };
+</script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data: {
+            errorMsg:errorMsg,
+            extra:extra?extra:{},
+            serverInfos:serverInfos?serverInfos:{},
+            license:license?license:{},
+            fileList:[],
+            dialogFormVisible:false,
+            tableData:[],
+            form:{
+
+            },
+             formLabelWidth: '120px'
+        },
+        mounted:function () {
+            this.readError()
+            this.initTable()
+        },
+        methods:{
+            initTable:function () {
+              if (extra && extra.authModels){
+                  this.tableData=extra.authModels
+              }
+            },
+            readError:function () {
+                if (this.errorMsg){
+                    this.$message.error(errorMsg)
+                }
+            },
+
+            submitUpload:function () {
+                this.$refs.upload.submit();
+            },
+            handleRemove:function (file, fileList) {
+                console.log("file remove");
+                console.log(file, fileList);
+            },
+            handlePreview:function (file) {
+                console.log(file);
+            },
+            handleSuccess:function (response, file, fileList) {
+                if (response.code!==200){
+                    this.$message.error(response.msg)
+                    fileList=[]
+                    file.remove()
+                }else{
+                    this.$message.success("替换成功")
+                }
+                console.log("upload success");
+                console.log(response, file, fileList);
+            },
+            handleError:function (err, file, fileList) {
+                console.log("some error");
+                console.log(err, file, fileList);
+            }
+        }
+    })
+
+</script>
+</html>

@@ -1,0 +1,394 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>首页</title>
+     <link rel="stylesheet" type="text/css" th:href="@{/css/element-ui.css}" />
+    <script type="text/javascript"   th:src="@{/js/vue.min.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/element.js}"></script>
+
+    <!--<link rel="stylesheet" type="text/css" href="./static/css/element-ui.css" />
+    <script type="text/javascript" src="./static/js/vue.min.js"></script>
+    <script type="text/javascript" src="./static/js/element.js"></script>-->
+
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+        .el-pagination {
+            text-align: right;
+        }
+        #app{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .line{
+            text-align: center;
+            height: 60px;
+            background-color: #f9fafb;
+            line-height: 55px;
+            font-size: 28px;
+        }
+        .linebottom {
+            text-align: right;
+            height: 48px !important;
+            line-height: 45px;
+            font-size: 12px;
+        }
+        .lic-form-line {
+            width: 100%;
+        }
+
+        .el-form-item {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .lic-server-form .el-form-item{
+            margin-bottom: 5px;
+        }
+
+        .el-form-item .upload-demo {
+            width: 100%;
+        }
+        .el-main.outer{
+            width: 100%;
+            border: 3px solid #fff;
+            padding: 0 40px;
+            font-weight: 900;
+        }
+
+        .lic-dialog .el-dialog{
+            width: 600px;
+        }
+
+        .lic-dialog .el-dialog .el-dialog__body {
+            padding: 10px 20px 0;
+        }
+
+        .lic-dialog .el-form-item__label {
+            width: 100px !important;
+            text-align: left;
+        }
+        .lic-dialog .el-form-item__content {
+            margin-left: 5px !important;
+            /*display: flex;*/
+            flex: 1;
+        }
+
+        .lic-dialog .el-form-item__content .el-select {
+            width: 100%;
+        }
+
+        .el-tag{
+            margin: 5px;
+        }
+        .upload-demo{
+            width: 360px;
+        }
+        .el-upload-list__item-name [class^=el-icon]{
+            height: auto;
+        }
+
+        .lic-top-button {
+            width: 100px;
+            margin: 5px;
+        }
+        .lic-warning {
+            color:#d03e1e;
+            font-size: 12px;
+        }
+        .el-row {
+            margin-bottom: 20px;
+            &:last-child {
+             margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container class="full">
+        <el-header class="line">欢迎查看 orcadt license 系统</el-header>
+        <el-main style="display: flex;justify-content: center;align-items: flex-end; flex-direction: column;" class="outer">
+            <el-button class="lic-top-button" size="small" type="primary" @click="dialogFormVisible = true">创建授权文件
+            </el-button>
+            <el-table
+                    :data="datalist"
+                    border
+                    v-loading="dataListLoading"
+                    style="width: 100%">
+                <el-table-column
+                        type="index"
+                        label="序号"
+                        width="60">
+                </el-table-column>
+                <el-table-column
+                        prop="issuedTime"
+                        label="授权开始时间">
+                </el-table-column>
+                <el-table-column prop="expiryTime" label="授权结束时间">
+                </el-table-column>
+                <el-table-column prop="description" label="证书信息">
+                </el-table-column>
+
+                <el-table-column  label="mac地址">
+                    <template slot-scope="scope">
+                        <el-tag v-for="item in renderValue(scope.row.licenseCheckModel,'macList')">{{item}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="主板">
+                    <template slot-scope="scope">
+                        <el-tag type="success">{{renderValue(scope.row.licenseCheckModel,'mainBoardSerial')}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="CPU">
+                    <template slot-scope="scope">
+                        <el-tag type="info">{{renderValue(scope.row.licenseCheckModel,'cpuSerial')}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="licenseCheckModel.authModels" label="业务权限">
+                    <template slot-scope="scope">
+                        <ul class="infinite-list">
+                            <li v-for="item in renderValue(scope.row.licenseCheckModel,'authModels')" class="infinite-list-item">
+                                {{item.name}}: {{item.value}}
+                            </li>
+                        </ul>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="60">
+                    <template slot-scope="scope">
+                        <el-link type="primary" :href="`/license/downloadLicense?recordId=${scope.row.recordId}`">下载</el-link>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    @size-change="sizeChangeHandle"
+                    @current-change="currentChangeHandle"
+                    :current-page="pageIndex"
+                    :page-sizes="[5,10, 20, 50]"
+                    :page-size="pageSize"
+                    :total="totalPage"
+                    layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+        </el-main>
+        <el-dialog class="lic-dialog" title="新建授权文件" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="授权时间" :label-width="formLabelWidth">
+                    <div class="block">
+                        <el-date-picker
+                                v-model="form.daterange"
+                                type="datetimerange"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="到期日期">
+                        </el-date-picker>
+                    </div>
+                </el-form-item>
+                <el-form-item label="主板编号" :label-width="formLabelWidth">
+                    <el-input v-model="form.licenseCheckModel.mainBoardSerial" auto-complete="off" maxlength="50" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="证书描述" :label-width="formLabelWidth">
+                    <el-input v-model="form.description" auto-complete="off" maxlength="200" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="CPU编号" :label-width="formLabelWidth">
+                    <el-input v-model="form.licenseCheckModel.cpuSerial" auto-complete="off"  maxlength="50" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="mac地址" :label-width="formLabelWidth">
+                    <el-select
+                            v-model="form.licenseCheckModel.macList"
+                            multiple
+                            filterable
+                            allow-create
+                            default-first-option
+                            placeholder="请输入授权mac,回车确定">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="业务授权" :label-width="formLabelWidth">
+                    <el-row :gutter="20">
+                        <el-button type="primary" @click="addAuthModel">增加授权项</el-button>
+                    </el-row>
+                    <el-row :gutter="20" v-for="item in form.licenseCheckModel.authModels">
+                        <el-col :span="8">
+                            <el-input v-model="item.name" placeholder="业务名称" auto-complete="off"  maxlength="20" show-word-limit></el-input>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-input v-model="item.key" placeholder="业务KEY" auto-complete="off" maxlength="20" show-word-limit></el-input>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-input v-model="item.value" placeholder="业务VALUE" auto-complete="off"  maxlength="20" show-word-limit></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="generateLicense">生成下载</el-button>
+            </div>
+        </el-dialog>
+        <el-footer class="linebottom">版权所有 orcadt@copyright by <el-link type="primary" style="font-size: 12px;">jie.huang</el-link></el-footer>
+    </el-container>
+</div>
+
+</body>
+
+<script>
+    var app = new Vue({
+        el:"#app",
+        data: {
+            options:[],
+            dialogFormVisible:false,
+            datalist:[],
+            pageIndex: 1,
+            pageSize: 10,
+            totalPage: 0,
+            dataListLoading: false,
+                form:{
+                    licenseCheckModel:{
+                        authModels:[]
+                    }
+                },
+             formLabelWidth: '120px'
+        },
+        mounted:function () {
+            this.readError()
+            this.initTable()
+        },
+        methods:{
+            renderValue(item = '',key){
+                try{
+                    let result = JSON.parse(item)
+                    return result[key]
+                }catch (e) {
+                    return
+                }
+            },
+            addAuthModel() {
+                this.form.licenseCheckModel.authModels.push({
+                    'key':'',
+                    'value':'',
+                    'name':''
+                })
+            },
+            generateLicense() {
+                if (this.form.daterange){
+                    this.form.issuedTimeStr = this.form.daterange[0]
+                    this.form.expiryTimeStr = this.form.daterange[1]
+                }
+                fetch('/license/generateLicense',{
+                    method:'post',
+                    headers: new Headers({
+                        'Content-Type': 'application/json'
+                    }),
+                    body: JSON.stringify({
+                        ...this.form
+                    })
+                }).then(res=>res.json()).then(data=>{
+                    console.log(data)
+                    if (data && data.code === 200) {
+                        this.$message.success("文件创建成功,开始下载...")
+                        this.getDataList()
+                        this.form={
+                            licenseCheckModel:{
+                                authModels:[]
+                            }
+                        }
+                        window.open(`${window.location.origin}/license/downloadLicense?recordId=${data.data}`)
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                    this.dataListLoading = false
+                    console.log(this.datalist)
+                    this.dialogFormVisible = false;
+                })
+
+            },
+            initTable:function () {
+              // if (extra && extra.authModels){
+              //     this.tableData=extra.authModels
+              // }
+                this.getDataList()
+            },
+            getDataList() {
+                this.dataListLoading = true
+                fetch(`/licensegeneraterecord/list?page=${this.pageIndex}&limit=${this.pageSize}`,{
+                    method:'get'
+                }).then(res=>res.json()).then(data=>{
+                    if (data && data.code === 0) {
+                        this.datalist = data.page.list
+                        this.totalPage = data.page.totalCount
+                    } else {
+                        this.dataList = []
+                        this.totalPage = 0
+                    }
+                    this.dataListLoading = false
+                })
+            },
+            readError:function () {
+                if (this.errorMsg){
+                    this.$message.error(errorMsg)
+                }
+
+
+            },
+
+            submitUpload:function () {
+                this.$refs.upload.submit();
+            },
+            handleRemove:function (file, fileList) {
+                console.log("file remove");
+                console.log(file, fileList);
+            },
+            handlePreview:function (file) {
+                console.log(file);
+            },
+            // 每页数
+            sizeChangeHandle (val) {
+                this.pageSize = val
+                this.pageIndex = 1
+                this.getDataList()
+            },
+            // 当前页
+            currentChangeHandle (val) {
+                this.pageIndex = val
+                this.getDataList()
+            },
+            handleSuccess:function (response, file, fileList) {
+                if (response.code!==200){
+                    this.$message.error(response.msg)
+                    fileList=[]
+                    file.remove()
+                }else{
+                    this.$message.success("替换成功")
+                }
+                console.log("upload success");
+                console.log(response, file, fileList);
+            },
+            handleError:function (err, file, fileList) {
+                console.log("some error");
+                console.log(err, file, fileList);
+            }
+        }
+    })
+
+</script>
+</html>
