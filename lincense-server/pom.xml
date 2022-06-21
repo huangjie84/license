@@ -22,7 +22,7 @@
         <mybatisplus.version>3.3.1</mybatisplus.version>
         <druid.version>1.1.13</druid.version>
         <commons.fileupload.version>1.2.2</commons.fileupload.version>
-        <mysql.version>8.0.17</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
     </properties>
 
     <dependencies>
